@@ -52,3 +52,16 @@ async def create_cuenta(cuenta: Cuenta_Ahorro):
 @app.post("/transacciones/")
 async def create_transaccion(transaccion: Transaccion):
     return {"mensaje": "Transaccion exitosa", "transaccion": transaccion}
+
+
+
+
+database.connect()
+
+@app.on_event("startup")
+async def startup_db_client():
+    database.connect()
+
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    database.disconnect()

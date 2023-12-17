@@ -8,26 +8,47 @@ Santiago Miño
 from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
+from datetime import datetime
+
 
 app = FastAPI()
 
+#classes
+class Cliente(BaseModel):
+    id_cliente: int
+    nombre:str
+    correo_electronico:str
+    password:str
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+class Cuenta_Ahorro(BaseModel):
+    id_cuenta: int
+    saldo: float
+    id_usuario: int
 
+class Transaccion(BaseModel):
+    id_transaccion:int
+    id_cuenta:int
+    tipo_transaccion:int
+    monto:float
+    fecha_transaccion: datetime  
 
+fake_db = []
+
+#controllers
+
+#Routes
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
+@app.post("/clientes/")
+async def create_cliente(cliente: Cliente):
+    return {"mensaje": "Cliente creado exitosamente", "cliente": cliente}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.post("/cuentas/")
+async def create_cuenta(cuenta: Cuenta_Ahorro):
+    return {"mensaje": "Cuenta creada exitosamente", "cuenta": cuenta}
 
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+@app.post("/transacciones/")
+async def create_transaccion(transaccion: Transaccion):
+    return {"mensaje": "Transaccion exitosa", "transaccion": transaccion}

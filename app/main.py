@@ -9,6 +9,11 @@ from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
 from datetime import datetime
+from sqlalchemy import create_engine
+import sys
+sys.path.append("c:/Users/Gato/Documents/backendSistemaAhorros/backendSistemaAhorros/")  # Reemplaza con la ruta correcta
+from app.database import database
+
 
 
 app = FastAPI()
@@ -32,8 +37,6 @@ class Transaccion(BaseModel):
     monto:float
     fecha_transaccion: datetime  
 
-fake_db = []
-
 #controllers
 
 #Routes
@@ -55,13 +58,16 @@ async def create_transaccion(transaccion: Transaccion):
 
 
 
-
-database.connect()
+app = FastAPI()
 
 @app.on_event("startup")
 async def startup_db_client():
-    database.connect()
+    await database.connect()
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    database.disconnect()
+    await database.disconnect()
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}

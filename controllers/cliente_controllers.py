@@ -10,6 +10,7 @@ def valor_md5(texto):
     valor_md5 = md5.hexdigest()
     return valor_md5
 
+
 def create_cliente(cliente: Cliente):
     with engine.connect() as connection:
         query = text("INSERT INTO clientes (id_cliente, nombre, correo_electronico, password) "
@@ -25,16 +26,18 @@ def delete_cliente(cliente: Cliente):
         query = text("DELETE FROM clientes WHERE id_cliente = :id_cliente")
         connection.execute(query, id_cliente=cliente.id_cliente)
 
-def get_cliente(cliente_id: int):
+def get_cliente(correo: str, contraseña: str):
     try:
         with engine.connect() as connection:
-            query = text("SELECT id_cliente, nombre, correo_electronico FROM clientes WHERE id_cliente = :id_cliente")
-            result = connection.execute(query, id_cliente=cliente_id).fetchone()
+            query = text("SELECT id_cliente FROM clientes WHERE correo_electronico = :correo_electronico AND password = :contra_md5")
+            result = connection.execute(query, correo_electronico=correo, contra_md5=valor_md5(contraseña)).fetchone()
 
             if not result:
                 raise HTTPException(status_code=404, detail="Cliente no encontrado")
 
-            cliente_data = dict(result)
-            return cliente_data
+            cliente_id = result[0]
+            return {"id_cliente": cliente_id}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener cliente: {str(e)}")

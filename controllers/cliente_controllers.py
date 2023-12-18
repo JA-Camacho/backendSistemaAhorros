@@ -1,13 +1,18 @@
 from models.cliente import Cliente
+from sqlalchemy import text
 from database.database import engine
 
 def create_cliente(cliente: Cliente):
     with engine.connect() as connection:
-        connection.execute('insert into clientes values ({0},\'{1}\',\'{2}\',\'{3}\')'.
-                           format(cliente.id_cliente,cliente.nombre,cliente.correo_electronico,cliente.password,cliente))
+        query = text("INSERT INTO clientes (id_cliente, nombre, correo_electronico, password) "
+                     "VALUES (:id_cliente, :nombre, :correo_electronico, :password)")
+        connection.execute(query, id_cliente=cliente.id_cliente, 
+                           nombre=cliente.nombre, 
+                           correo_electronico=cliente.correo_electronico, 
+                           password=cliente.password)
     return {"mensaje": "Cliente creado exitosamente", "cliente": cliente}
 
 def delete_cliente(cliente: Cliente):
     with engine.connect() as connection:
-        connection.execute('delete from clientes where id_cliente = {0}'.
-                           format(cliente.id_cliente))
+        query = text("DELETE FROM clientes WHERE id_cliente = :id_cliente")
+        connection.execute(query, id_cliente=cliente.id_cliente)

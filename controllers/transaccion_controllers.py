@@ -1,4 +1,4 @@
-from models import Transaccion
+from models.transaccion import Transaccion
 from sqlalchemy import text
 from fastapi import HTTPException
 from database.database import engine

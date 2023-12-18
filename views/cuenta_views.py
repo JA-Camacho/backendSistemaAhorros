@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from models.cuenta_ahorro import Cuenta_Ahorro
-from controllers.cuenta_controllers import create_cuenta, delete_cuenta, get_cuentas_usuario
+from controllers.cuenta_controllers import create_cuenta, delete_cuenta
 
 router = APIRouter()
 

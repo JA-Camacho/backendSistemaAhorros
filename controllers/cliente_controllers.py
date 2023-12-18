@@ -1,6 +1,7 @@
 from models.cliente import Cliente
 from sqlalchemy import text
 from database.database import engine
+from fastapi import HTTPException
 import hashlib
 
 def valor_md5(texto):
@@ -23,3 +24,17 @@ def delete_cliente(cliente: Cliente):
     with engine.connect() as connection:
         query = text("DELETE FROM clientes WHERE id_cliente = :id_cliente")
         connection.execute(query, id_cliente=cliente.id_cliente)
+
+def get_cliente(cliente_id: int):
+    try:
+        with engine.connect() as connection:
+            query = text("SELECT id_cliente, nombre, correo_electronico FROM clientes WHERE id_cliente = :id_cliente")
+            result = connection.execute(query, id_cliente=cliente_id).fetchone()
+
+            if not result:
+                raise HTTPException(status_code=404, detail="Cliente no encontrado")
+
+            cliente_data = dict(result)
+            return cliente_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener cliente: {str(e)}")

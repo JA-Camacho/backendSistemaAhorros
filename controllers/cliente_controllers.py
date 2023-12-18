@@ -1,6 +1,13 @@
 from models.cliente import Cliente
 from sqlalchemy import text
 from database.database import engine
+import hashlib
+
+def valor_md5(texto):
+    md5 = hashlib.md5()
+    md5.update(texto.encode('utf-8'))
+    valor_md5 = md5.hexdigest()
+    return valor_md5
 
 def create_cliente(cliente: Cliente):
     with engine.connect() as connection:
@@ -9,7 +16,7 @@ def create_cliente(cliente: Cliente):
         connection.execute(query, id_cliente=cliente.id_cliente, 
                            nombre=cliente.nombre, 
                            correo_electronico=cliente.correo_electronico, 
-                           password=cliente.password)
+                           password=valor_md5(cliente.password))
     return {"mensaje": "Cliente creado exitosamente", "cliente": cliente}
 
 def delete_cliente(cliente: Cliente):

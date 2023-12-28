@@ -1,4 +1,5 @@
 # tests/test_cliente_controllers.py
+from controllers.cliente_controllers import create_cliente, delete_cliente, get_cliente
 
 def test_create_cliente():
     """

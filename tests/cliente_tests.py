@@ -27,6 +27,17 @@ def test_delete_cliente():
 
     """
 
+def test_get_cliente():
+    """
+    Test para la función get_cliente.
+
+    >>> correo = "john@example.com"
+    >>> contrasena = "secret"
+    >>> result = get_cliente(correo, contrasena)
+    >>> "id_cliente" in result
+    True
+
+    """
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
